@@ -35,26 +35,26 @@ init python:
             else:
                 self.points -= 1
 
-        @property
-        def playermistakes(self):
-            return self.mistakes
+#        @property
+#        def playermistakes(self):
+#            return self.mistakes
+#        
+#        @playermistakes.setter
+#        def playermistakes(self, value):
+#            self.mistakes = value
+#            if self.incorrect_choice:  # Added self reference
+#                self.mistakes += 1
         
-        @playermistakes.setter
-        def playermistakes(self, value):
-            self.mistakes = value
-            if self.incorrect_choice:  # Added self reference
-                self.mistakes += 1
-        
-        @property
-        def mistakeschecker(self):
-            return self.mistakes_check
-        
-        @mistakeschecker.setter
-        def mistakeschecker(self, value):  
-            self.mistakes_check = value
-            if self.mistakes >= 2:
-                self.retry_option = True
-            else:
-                self.retry_option = False
+#        @property
+#        def mistakeschecker(self):
+#            return self.mistakes_check
+#        
+#        @mistakeschecker.setter
+#        def mistakeschecker(self, value):  
+#            self.mistakes_check = value
+#            if self.mistakes >= 2:
+#                self.retry_option = True
+#            else:
+#                self.retry_option = False
 
 
