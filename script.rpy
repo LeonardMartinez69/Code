@@ -13,12 +13,15 @@ label start:
     menu choice_menu:
         "Right choice":
             $ variables.points += 5
+#            variables.correct_choice(True) ---> if wrapper
             pass
-            #jump rightchoice (not finished)
+#            jump rightchoice (not finished)
+            
 
         "Wrong choice":
             $ variables.points -= 1
-            #jump choice_menu (no choice menu yet)
+#            jump choice_menu (no choice menu yet)
+#            variables.correct_choice(False)  ---> if wrapper
             pass
 
     e "You're correct. You have [variables.points] points."
