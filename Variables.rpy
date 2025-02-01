@@ -28,12 +28,13 @@ init python:
             self.points = value
             if self.correct_choice:  
                 self.points += 5
-        
-        def correct_choice(self, is_true):
-            if is_true:
-                self.points += 5
-            else:
-                self.points -= 1
+
+#        (Wrapper)
+#        def correct_choice(self, is_true): 
+#            if is_true:
+#                self.points += 5
+#            else:
+#                self.points -= 1
 
 #        @property
 #        def playermistakes(self):
