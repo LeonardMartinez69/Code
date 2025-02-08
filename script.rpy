@@ -2,7 +2,6 @@
 define correct = "You got the right answer!"
 define wrong = "You got the wrong answer!"
 
-
 label start:
     call variables  
     show screen ScoreOverlay
@@ -50,7 +49,10 @@ label question_3:
     jump question_4
     
      
-label question_4:  
+
+label question_4:
+    $ variables = Variables()
+    show screen ScoreOverlay
 
     menu choice_menu4:
         "Okay choice":
@@ -58,10 +60,53 @@ label question_4:
     
         "Meh choice":
             $ variables.points -= 1
-    
-    e  "You have [variables.points] points."
-    e "In total, you made [variables.mistakes] wrong choices so far."
 
+    call addtional_options
+
+    menu choice_menu5:
+        "Okay choice":
+            $ variables.points += 5
+    
+        "Meh choice":
+            $ variables.points -= 1
+
+    call addtional_options
+
+    menu choice_menu6:
+        "Okay choice":
+            $ variables.points += 5
+    
+        "Meh choice":
+            $ variables.points -= 1
+
+    call addtional_options
+
+    menu choice_menu7:
+        "Okay choice":
+            $ variables.points += 5
+    
+        "Meh choice":
+            $ variables.points -= 1
+
+    call addtional_options
+
+    "You have [variables.points] points."
+    "In total, you made [variables.mistakes] wrong choices so far."
+
+    python:
+        player_name = renpy.input("Enter your name for the leaderboard:")
+        variables.leaderboard.update({player_name: variables.points})
+        variables.save_leaderboard()
+        
+    call screen Leaderboard(variables)
+
+    menu leaderboard_menu:
+        "Retry from the beginning":
+            hide screen Leaderboard
+            jump start
+        "Exit":
+            return
+    
     hide screen ScoreOverlay
 
 label rightchoice:
@@ -74,7 +119,7 @@ label variables:
         variables = Variables()  
     return
 
-label additional_options:
+label addtional_options:
     
     if variables.retry_option and not variables.continue_anyway:
         menu too_many_mistakes_menu:
@@ -84,6 +129,7 @@ label additional_options:
             "Retry from the beginning!":
                 jump start
         return
+
 
 #    if variables.retry_option == True and variables.continue_anyway == False:
 #        menu too_many_mistakes_menu:
