@@ -4,16 +4,16 @@ screen Leaderboard(data):
     vbox style "st_leaderboard_box":
         hbox style "st_leaderboard_box":
             frame style "st_leaderboard_col1":
-                background Solid("#ffffff33")
+                background Solid("#353535ff")
                 text "Player Name" style "st_leaderboard_header"
             frame style "st_leaderboard_col2":
-                background Solid("#ffffff33")
+                background Solid("#353535ff")
                 text "Points" style "st_leaderboard_header"
         $ index = 0
         for name, score in data.leaderboard.items():
             python:
                 index += 1
-                row_color = "#ffffff22" if index % 2 == 0 else "#ffffff11"
+                row_color = "#353535bb" if index % 2 == 0 else "#222222c4"
             hbox style "st_leaderboard_box":
                 frame style "st_leaderboard_col1":
                     background Solid(row_color)
@@ -40,28 +40,24 @@ screen ScoreOverlay():
     tag score_overlay
     frame:
         anchor (0.5, 0.0)
-        background Solid("#ffffff99")
+        background Frame("lined_paper.png")  # Use an image of lined paper as background
         offset (0, 10)
         pos (0.5, 0.0)
+        xsize 250  # Ensuring the frame is wide enough for centering
         vbox:
-            vpgrid:
-                cols 2
-                frame:
-                    background None
-                    xsize 200
-                    text _("Points") xalign 0.5 bold True
-                frame:
-                    background None
-                    xsize 200
-                    text _("Mistakes") xalign 0.5 bold True
-                text "[variables.points]" xalign 0.5
-                text "[variables.mistakes]" xalign 0.5
-            button:
+            spacing 10  # Increased spacing further to move Points text down
+            xalign 0.5  # Ensures child elements are centered
+            null height 20  # Moves the Points value down by adding space
+            text _("Points") size 28 bold True xalign 0.5
+            text "[variables.points]" size 48 bold True xalign 0.5
+            textbutton "Leaderboard":
                 xalign 0.5
-                background Solid("#00000099")
-                hover_background Solid("#000000cc")
+                background Solid("#e2e2e299")
+                hover_background Solid("#757575cc")
+                xsize 150  # Reduced width
+                ysize 40   # Adjusted height
+                text_size 22  # Ensures text scales properly within the button
                 action ShowMenu("Leaderboard", variables)
-                text "Leaderboard"
 
 style st_leaderboard_text:
     xalign 0.5
@@ -88,3 +84,49 @@ style st_leaderboard_button:
 
 style st_leaderboard_button_text:
     xalign 0.5
+
+screen material_selection(correct_items, all_items):
+    modal True
+    zorder 200
+    default selected = set()
+
+    frame:
+        xalign 0.5
+        yalign 0.5
+        xpadding 30
+        ypadding 30
+        
+        vbox:
+            spacing 20
+            label "Select the correct materials:" xalign 0.5
+            
+            # Display the number of selected items
+            text "Selected: [len(selected)]/5" xalign 0.5
+            
+            vpgrid:
+                cols 3
+                spacing 40
+                for item in all_items:
+                    button:
+                        # Disable the button if the selection limit is reached and the item is not already selected
+                        action If(
+                            len(selected) < 5 or item in selected,
+                            ToggleSetMembership(selected, item),
+                            None
+                        )
+                        selected_background "#CCFFCC"
+                        xfill True
+                        xsize 200
+                        ysize 200
+                        sensitive (len(selected) < 5 or item in selected)  # Disable button if limit is reached
+                        vbox:
+                            spacing 5
+                            add materials[item]:
+                                xalign 0.5
+                                ysize 150
+                                fit "contain"
+                            text item:
+                                xalign 0.5
+                                size 16
+            
+            textbutton "Submit" action [Return(selected), Hide("material_selection")] xalign 0.5
