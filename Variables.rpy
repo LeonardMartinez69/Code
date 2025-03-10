@@ -12,6 +12,8 @@ init 10 python:
             self.continue_anyway = False
             self.leaderboard = self.load_leaderboard()
             self._wrong_answers = {}
+            self._pages = 0
+            self._max_pages = 4
 
         @property
         def mistakes(self):
@@ -115,6 +117,9 @@ init 10 python:
 
         def reload_leaderboard(self):
             self.leaderboard = self.load_leaderboard()
+
+            
+            
 
 
 #        @property

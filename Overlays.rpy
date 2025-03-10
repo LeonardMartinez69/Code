@@ -48,8 +48,8 @@ screen ScoreOverlay():
             spacing 10  # Increased spacing further to move Points text down
             xalign 0.5  # Ensures child elements are centered
             null height 20  # Moves the Points value down by adding space
-            text _("Points") size 28 bold True xalign 0.5
-            text "[variables.points]" size 48 bold True xalign 0.5
+            text ("Points") style "st_score_points_text"
+            text "[variables.points]" style "st_score_variables_points_text"
             textbutton "Leaderboard":
                 xalign 0.5
                 background Solid("#e2e2e299")
@@ -58,6 +58,16 @@ screen ScoreOverlay():
                 ysize 40   # Adjusted height
                 text_size 22  # Ensures text scales properly within the button
                 action ShowMenu("Leaderboard", variables)
+
+style st_score_points_text:
+    size 28 
+    bold True 
+    xalign 0.5
+
+style st_score_variables_points_text:
+    size 48 
+    bold True 
+    xalign 0.5
 
 style st_leaderboard_text:
     xalign 0.5
@@ -85,13 +95,50 @@ style st_leaderboard_button:
 style st_leaderboard_button_text:
     xalign 0.5
 
-screen material_selection(correct_items, all_items):
+style st_tutorials_text:
+    size 30
+    xalign 0.5
+    yalign 0.5
+
+style st_backandnext_buttons:
+    xpos 200
+    ypos 900
+
+transform Back_button:
+    xalign 1.0
+    yalign 1.0
+    xoffset -200  
+    yoffset 100
+    xsize 200
+    ysize 200
+
+transform Next_button:
+    xalign 1.0
+    yalign 1.0
+    xoffset -100  
+    yoffset 100
+    xsize 200
+    ysize 200
+
+
+
+
+screen material_selection(correct_items, all_items, tutorial_info=None):
     modal True
     zorder 200
     default selected = set()
 
     $ selected_len = len(selected)
     $ max_selected = selected_len >= 5
+    if tutorial_info:
+        frame:
+            anchor (1.0, 0.0)
+            pos (1.0, 0.0)
+            offset (-10, 10)
+            button:
+                text "See Tutorial again":
+                    hover_color "#cccccc"
+                action ShowMenu("tutorial1", tutorial_info=tutorial_info)
     frame:
         xalign 0.5
         yalign 0.5
@@ -161,3 +208,76 @@ screen material_selection(correct_items, all_items):
                         textbutton "{color=#990000}Skip (incorrect){/color}":
                             action [Return(set()), Hide("material_selection")]
                             xalign 0.5
+
+screen tutorial1(tutorial_info):
+    tag tutorials
+
+    default current_page = 0
+
+    $ tutorial_info_page = tutorial_info[current_page]
+
+    frame:
+        anchor (0.5, 0.5)
+        pos (0.5, 0.5)
+        background Solid("#141414fd")
+        xysize (800, 600)
+        
+        hbox:
+            xalign 0.1
+            xoffset 630
+            yalign 1.0
+            imagebutton:
+                idle "Back_Button.png" at Back_button
+                if current_page > 0:
+                    action SetScreenVariable("current_page", current_page - 1)
+
+        hbox:
+            xalign 1.0
+            xoffset 200
+            yalign 1.0
+            imagebutton:
+                if current_page < len(tutorial_info) - 1:
+                    idle "Next_Button.png" at Next_button
+                    action SetScreenVariable("current_page", current_page + 1)
+                else:
+                    idle "Next_Button.png" at Next_button
+                    action Return()
+            
+        
+        frame:
+            anchor (0.5, 0.5)
+            pos (0.5, 0.5)
+            xysize (700, 500)
+            background Solid("#1d1d1db6")
+        
+        frame:
+            pos (0.5, 0.0)
+            anchor (0.5, 0.5)
+            background Solid("#ffffffff")
+            
+            frame:
+                xalign 0.5
+                background Solid("#b6b3b3")
+                hbox:
+                    text "Tutorial 1" style "st_leaderboard_header"
+                    xalign 0.5
+                    offset (3, 0)
+                    yalign -0.1
+
+        vbox:
+            xalign 0.5
+            yalign 0.5
+            spacing 5
+            for info_text in tutorial_info_page:
+                text info_text
+
+        
+    
+
+
+            
+    
+        
+
+
+
