@@ -187,6 +187,9 @@ label scene_3:
         A "What are the materials we need?"
         hide irene speaking
 
+
+        call screen tutorial1(scene_3_info)
+
         # Define correct materials and all items
         $ correct_materials = {"Wire", "Tongs", "Bunsen Burner", "Evaporating Dish", "Magnesium"}
         $ all_items = list(materials.keys())
@@ -201,7 +204,7 @@ label scene_3:
         $ all_items = list(correct_materials) + additional_items
         $ renpy.random.shuffle(all_items)
 
-        call screen material_selection(correct_materials, all_items)
+        call screen material_selection(correct_materials, all_items, tutorial_info=scene_3_info)
 
         # Evaluate selection
         $ correct_selected = _return & correct_materials  # Intersection of selected and correct items
@@ -862,9 +865,10 @@ label quiz:
         jump scene_11
 
     python:
-        player_name = renpy.input("Enter your name for the leaderboard:")
-        variables.leaderboard.update({player_name: variables.points})
-        variables.save_leaderboard()
+        if variables.is_online():
+            player_name = renpy.input("Enter your name for the leaderboard:")
+            variables.leaderboard.update({player_name: variables.points})
+            variables.save_leaderboard()
 
     jump results
 
@@ -880,18 +884,20 @@ label results:
         D "Reloading the slideshow for review."
         jump quiz
 
-    B "We hope you learned something new about these experiments. Thanks for trying it out!"
-        
-    call screen Leaderboard(variables)
+    B "We hope you learned something new about these experiments. Thanks for trying it out!"    
 
-    menu leaderboard_menu:
-        "Retry from the beginning":
-            hide screen Leaderboard
-            jump start
-        "Exit":
-            return
-    
-    hide screen ScoreOverlay
+    if variables.is_online():
+        call screen Leaderboard(variables)
+
+        menu leaderboard_menu:
+            "Retry from the beginning":
+                hide screen Leaderboard
+                jump start
+            "Exit":
+                return
+        
+        hide screen ScoreOverlay
+    return
 
 label rightchoice:
     e "This is the right choice"

@@ -135,7 +135,7 @@ style window:
     yalign gui.textbox_yalign
     ysize gui.textbox_height
 
-    background Solid( "#000000", xalign=0.5, yalign=0.5 )
+    background Solid( "#303030b9", xalign=0.5, yalign=0.5 )
 
 style namebox:
     xpos gui.name_xpos
@@ -151,7 +151,6 @@ style say_label:
     properties gui.text_properties("name", accent=True)
     xalign gui.name_xalign
     yalign 0.5
-    outlines [ (1, "#91dfd25b", 0, 0) ]
 
 style say_dialogue:
     properties gui.text_properties("dialogue")
@@ -159,7 +158,7 @@ style say_dialogue:
     xpos gui.dialogue_xpos
     xsize gui.dialogue_width
     ypos gui.dialogue_ypos
-    outlines [ (1, "#99bbb3", 0, 0) ]
+
 
     adjust_spacing False
 
