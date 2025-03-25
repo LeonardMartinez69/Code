@@ -1,6 +1,4 @@
-﻿
-default persistent.admin = False
-init:
+﻿init :
     # Background images
     image bg laboratory = "images/Laboratory.png"
     image bg laboratory_table = "images/Laboratory.png"
@@ -18,6 +16,17 @@ init:
         zoom 0.5
     image irene default:
         "images/Irene_Default.png"
+        zoom 0.5
+
+    # Lead moore images
+    image Lead Moore speaking:
+        "images/LEADMORE_HAPY.png"
+        zoom 0.5
+    image Lead Moore cry:
+        "images/nevercookagain.png"
+        zoom 0.5
+    image Lead Moore happy:
+        "images/LEADMORE_ABSOLUTE CINEMA.png"
         zoom 0.5
 
     # Titania images
@@ -72,17 +81,60 @@ init:
         "images/ICON_PLACEHOLDER.png"
         zoom 0.5
 
+#FOR CHARACTER SPEAKING GENERATOR
+init python:
+
+    #Generate seperate audio channel from voice for beeps.
+    renpy.music.register_channel(name='beeps', mixer='voice')
+
+    #Character callback that generates the sound.
+    def C(event, **kwargs):
+        if event == "show": #When the text is shown
+            build_sentence(_last_say_what, "Chlory")
+            renpy.sound.play("audio/output.wav", channel="beeps", loop=False)
+        elif event == "slow_done" or event == "end": #When the text is finished displaying or you open a menu.
+            renpy.sound.stop(channel="beeps")
+
+    def A(event, **kwargs):
+        if event == "show": 
+            build_sentence(_last_say_what, "Irene")
+            renpy.sound.play("audio/output.wav", channel="beeps", loop=False)
+        elif event == "slow_done" or event == "end": 
+            renpy.sound.stop(channel="beeps") 
+
+    def B(event, **kwargs):
+        if event == "show": 
+            build_sentence(_last_say_what, "Titania")
+            renpy.sound.play("audio/output.wav", channel="beeps", loop=False)
+        elif event == "slow_done" or event == "end": 
+            renpy.sound.stop(channel="beeps") 
+
+    def D(event, **kwargs):
+        if event == "show": 
+            build_sentence(_last_say_what, "Yuranno")
+            renpy.sound.play("audio/output.wav", channel="beeps", loop=False)
+        elif event == "slow_done" or event == "end": 
+            renpy.sound.stop(channel="beeps") 
+
+
+
 define e = Character("Eileen")
 define player = Character("Player")
-define A = Character("Irene")
-define B = Character("Titania")
-define C = Character("Chlory")
-define D = Character("Yuranno")
-define teacher = Character("Teacher")
+define A = Character("Irene", callback=A)
+define B = Character("Titania", callback=B)
+define C = Character("Chlory", callback=C)
+define D = Character("Yuranno", callback=D)
+define L = Character("Lead Moore", who_style="small_name")
 
+style small_name:
+    size 50
+    xpos 50
+    ypos 60
 define correct = "You got the right answer!"
 define wrong = "You got the wrong answer!"
 
+style large_text :
+    size 20
 default materials = {
     "Wire": "images/wire.png",
     "Tongs": "images/tongs.png",
@@ -104,33 +156,45 @@ label before_main_menu:
     $ preferences.set_volume("music", 0.2)  # set default main music
     return
 
-label start:
-    call variables  
-    show screen ScoreOverlay  
 
-    play music "audio/classroom.ogg" fadein 1.0
+label start:
+    show screen Backbutton
+
+    play music "<loop 6.33>audio/classroom.ogg" fadein 1.0
+
+    call variables from _call_variables  
+    show screen ScoreOverlay  
+    
 
     scene bg classroom_pov
     with fade
 
+    show irene default
+    A "Yo! are you awake? "
+    hide irene default
+
+    show irene speak2 at left
+    A "We were assigned as {i}{color=#E2A602} groupmates {/color}{/i} for the experiment"
+    hide irene speak2 
+    
     show irene speaking at left
-    A "Hi! I'm [A]! Nice to meet you!"
+    A "Oh, It's me {color=#9858CD}[A]{/color} btw, Nice to meet you I guess."
     hide irene speaking
 
     show titania speaking at left
-    B "Hello! I'm [B]. Let's split up the parts, I'll do the second experiment!"
+    B "And I'm {color=#9192C8}[B]{/color}. Let's split up the parts, I'll do the second experiment!"
     hide titania speaking
 
     show chlory speaking
-    C "Then the third should be mine! [C] by the way, nice to meet you!"
+    C "Then the third should be mine! {color=#E2A602}[C]{/color} by the way, nice to meet you!"
     hide chlory speaking
 
     show yuranno speaking at right
-    D "I guess the last one's mine then. The name's [D]."
+    D "I guess the last one's mine then. The name's {color=#00C02D}[D]{/color}."
     hide yuranno speaking
 
     show titania smile
-    B "You should help everyone, [player]!"
+    B "Guess you should {color=#E2A602}help them and contribute to the group{/color} then, [player]!"
     hide titania smile
 
     player "Sure!"
@@ -138,35 +202,29 @@ label start:
     show irene speaking at left
     A "Let's do mine first!"
     hide irene speaking
-    
-    $ first_try = True
+
+   
     jump scene_2
 
 label scene_2:
-
+    show screen Backbutton
     scene bg laboratory_table
     with fade
     
     show irene speaking at left
-
-    if variables.wrong_answers:
-        A "You didn't get that quite right!"
-        A "I'll read out the process in the book again, then you keep it in mind."
-    else:
-        A "I'll read out the process in the book, then you keep it in mind."
-
+    A "I'll {color=#E2A602}read out the process in the book, then you keep it in mind.{/color}"
     hide irene speaking
-    
+
     player "*nods*"
     
     show irene speaking at left
     A "Here I go! It says that we should-"
-    A "Note the appearance of the wire."
-    A "Using the tongs..."
-    A "We must hold the wire in the hottest part of a burner flame for 1 to 2 minutes."
-    A "But first, to do that, we need to fix the Bunsen burner. Put the end of the tube into the yellow faucet, and the other end to the Bunsen burner."
-    A "Then, we place the evaporating dish near the base of the burner."
-    A "After that, we get a piece of magnesium from the laboratory coordinator. Using crucible tongs, hold the sample in the burner flame until the magnesium starts to burn. REMEMBER, DO NOT LOOK DIRECTLY AT THE FLAME."
+    A "{color=#EC15DA}Note the appearance of the wire.{/color}"
+    A "Using the {color=#EC15DA}tongs{/color}..."
+    A "We must hold the {color=#EC15DA}wire{/color} in the hottest part of a {color=#EC15DA}burner flame for 1 to 2 minutes.{/color}"
+    A "But first, to do that, we need to fix the {color=#EC15DA}Bunsen burner{/color}. Put the end of the tube into the yellow faucet, and the other end to the {color=#EC15DA}Bunsen burner.{/color}"
+    A "Then, we place the {color=#EC15DA}evaporating dish{/color} near the base of the burner."
+    A "After that, we get a piece of {color=#EC15DA}magnesium{/color} from the laboratory coordinator. Using {color=#EC15DA}crucible tongs{/color}, hold the sample in the burner flame until the{color=#EC15DA} magnesium {/color}starts to burn. REMEMBER,{color=#ff0000} DO NOT LOOK DIRECTLY AT THE FLAME.{/color}"
     A "When the ribbon stops burning, put the remains in the evaporating dish. Then we examine all that!"
     A "Did you get all that?"
     hide irene speaking
@@ -176,16 +234,17 @@ label scene_2:
     show irene speaking at left
     A "Great! Let's start!"
     hide irene speaking
-    
+    $ first_try = True
     jump scene_3
 
 label scene_3:
-    # show question only if they were none were asked yet or
-    # if the question was answered incorrectly in the previous run
+    hide screen Backbutton
     if "q1" in variables.wrong_answers or first_try:
         show irene speaking at left
         A "What are the materials we need?"
         hide irene speaking
+
+        call screen tutorial1(scene_3_info)
 
         # Define correct materials and all items
         $ correct_materials = {"Wire", "Tongs", "Bunsen Burner", "Evaporating Dish", "Magnesium"}
@@ -201,7 +260,7 @@ label scene_3:
         $ all_items = list(correct_materials) + additional_items
         $ renpy.random.shuffle(all_items)
 
-        call screen material_selection(correct_materials, all_items)
+        call screen material_selection(correct_materials, all_items, tutorial_info=scene_3_info)
 
         # Evaluate selection
         $ correct_selected = _return & correct_materials  # Intersection of selected and correct items
@@ -223,46 +282,48 @@ label scene_3:
                 A "[wrong] You selected incorrect items."
         hide irene speaking
 
-    # show question only if they were none were asked yet or
-    # if the question was answered incorrectly in the previous run
     if "q2" in variables.wrong_answers or first_try:
         show irene speaking at left
         A "What do we do with this?"
         hide irene speaking
+
         menu:
-            "Hold the sample in the burner flame until the magnesium starts to burn"(is_correct=True):
-                $ variables.correct_answer("q2")
+            "Hold the sample in the burner flame until the magnesium starts to burn":
+                $ variables.points += 5
                 show irene speaking at left
                 A "Right! I remember now! DON'T LOOK AT IT DIRECTLY!"
                 hide irene speaking
             "Put aside":
-                $ variables.wrong_answer("q2")
+                $ variables.points -= 1
                 show irene speaking at left
-                A "Wrong!"
+                A "[wrong]"
                 hide irene speaking
             "Hold the sample beside the burner flame for 2 to 3 minutes":
-                $ variables.wrong_answer("q2")
+                $ variables.points -= 1
                 show irene speaking at left
-                A "Wrong!"
+                A "[wrong]"
                 hide irene speaking
-
-    # if one of the questions was answered wrongly, restart "chapter"
-    # questions that were answered correctly will not be asked again
+            "furiously start eating the magnesium":
+                $ variables.points -= 1
+                show irene speaking at left
+                A "[wrong]"
+                hide irene speaking
     if len(variables.wrong_answers) > 0:
         $ first_try = False
         jump scene_2
-
+    
     jump scene_4
 
 label scene_4:
+    show screen Backbutton
 
     show irene speaking at left
     A "We're finally done!"
     hide irene speaking
     
-    show teacher at left
-    teacher "Great Job!"
-    hide teacher
+    show Lead Moore happy at left
+    L "Great Job!"
+    hide Lead Moore happy
 
     "You have [variables.points] points."
     "In total, you made [variables.mistakes] wrong choices so far."
@@ -270,6 +331,9 @@ label scene_4:
     jump scene_5
 
 label scene_5:
+    
+    show screen Backbutton
+
     scene bg laboratory_table
     with fade
     
@@ -286,13 +350,21 @@ label scene_5:
     B "Next, we'll heat it for about 3 minutes. Use the test tube holder like this. Make sure you hold it at the top, and don't touch the bottom."
     
     B "After heating, we insert a burning wood splint into the test tube. If carbon dioxide (CO2) is present, it will extinguish the flame. Make sure you observe any changes in the residue inside the test tube."
+
+    B "Oh! Great, you've finished the first experiment. Let's move on to mine next. It says here in the book that-"
+    
+    B "{color=#EC15DA}Place 2 heaping micro spatulas of copper (II) carbonate (CuCO3) {/color} in a clean, dry test tube. {color=#EC15DA}Note the appearance of the sample.{/color}"
+    
+    B "Watch the appearance closely—it's a light green powder."
+    
+    B "Next, we'll heat it for about {color=#EC15DA}3 minutes.{/color} Use the test tube holder like this.{color=#EC15DA} Make sure you hold it at the top, and don't touch the bottom.{/color}"
+    
+    B "After heating, {color=#EC15DA}we insert a burning wood splint into the test tube. If carbon dioxide (CO2) is present, it will extinguish the flame.{/color} {color=#D17D61}Make sure you observe any changes in the residue inside the test tube.{/color}"
     
     B "Did you get all that?"
     hide titania speaking
     
-    show player at left
     player "*nods*"
-    hide player
     
     show titania speaking at left
     B "Great! Let's start!"
@@ -301,6 +373,7 @@ label scene_5:
     jump scene_6
 
 label scene_6:
+    hide screen Backbutton
 
     if "q1" in variables.wrong_answers or first_try:
         show titania speaking at left
@@ -358,17 +431,17 @@ label scene_6:
             "3 heaping micro spatulas of copper (II) carbonate (CuCO3)":
                 $ variables.wrong_answer("q2")
                 show titania speaking at left
-                B "Haha! I see you got confused. Here's the right one."
+                B "Haha! I see you got confused. Let's try again later."
                 hide titania speaking
             "2 heaping micro spatulas of Copper (II) carbonate (CuCO4)":
                 $ variables.wrong_answer("q2")
                 show titania speaking at left
-                B "Haha! I see you got confused. Here's the right one."
+                B "Haha! I see you got confused. Let's try again later."
                 hide titania speaking
             "3 heaping micro spatulas of Copper (II) carbonate (CuCO2)":
                 $ variables.wrong_answer("q2")
                 show titania speaking at left
-                B "Haha! I see you got confused. Here's the right one."
+                B "Haha! I see you got confused. Let's try again later."
                 hide titania speaking
     
     
@@ -473,19 +546,21 @@ label scene_6:
     jump scene_7
 
 label scene_7:
+    show screen Backbutton
     show titania speaking at left
     B "We're finally done!"
     hide titania speaking
-    show teacher speaking at right
-    teacher "Great Job!"
-    hide teacher speaking
-
+    show Lead Moore happy at left
+    L "Absolute Cinema!"
+    hide Lead Moore happy
+    
     "You have [variables.points] points."
     "In total, you made [variables.mistakes] wrong choices so far."
 
     jump scene_8
 
 label scene_8:
+    show screen Backbutton
     $ first_try = True
     scene bg laboratory_table
     with fade
@@ -500,21 +575,21 @@ label scene_8:
     player "*nods*"
     
     label substitution_book:
-
+    show screen Backbutton
     show chlory speaking
-    C "CAUTION. IT IS IMPORTANT TO WEAR PROPER ATTIRE INSIDE THE LABORATORY EXPERIMENT SUCH AS: LABORATORY GOWN, SAFETY GOGGLES, FACE MASK, AND DISPOSABLE GLOVES."
+    C "{color=#EC15DA}CAUTION. IT IS IMPORTANT TO WEAR PROPER ATTIRE INSIDE THE LABORATORY EXPERIMENT SUCH AS: LABORATORY GOWN, SAFETY GOGGLES, FACE MASK, AND DISPOSABLE GLOVES.{/color}"
     
-    C "Let's start! First, stand a clean, dry test tube in the test tube rack."
+    C "Let's start! First, stand a clean, {color=#EC15DA}dry test tube{/color} in the test tube rack."
     
-    C "Add about 5 mL of 3 M hydrochloric acid (HCl) to the tube."
+    C "Add about {color=#EC15DA}5 mL of 3 M hydrochloric acid (HCl){/color} to the tube."
     
-    C "Then, carefully drop a small piece of zinc metal (Zn) into the acid in the test tube. Observe and record what happens."
+    C "Then, carefully {color=#EC15DA}drop a small piece of zinc metal (Zn) into the acid in the test tube{/color}. Observe and record what happens."
     
-    C "Using a test tube holder, invert a second test tube over the mouth of the test tube in which the reaction is taking place. Then, remove the inverted tube after 30 seconds and quickly insert a burning wood splint into the mouth of the tube. A 'pop' indicates the presence of hydrogen gas."
+    C "{color=#D17D61}Using a test tube holder{/color}, {color=#EC15DA}invert a second test tube over the mouth of the test tube in which the reaction is taking place. Then, remove the inverted tube after 30 seconds and quickly insert a burning wood splint into the mouth of the tube{/color}. A 'pop' indicates the presence of hydrogen gas."
     
     C "Take note of the appearance of the substance in the reaction test tube."
     
-    C "Now, for the second part: Add about 5 mL of 1 M copper (II) sulfate (CuSO4) solution to a clean, dry test tube. Place a small amount of zinc metal in the solution. Observe the solution and the zinc before and after the reaction."
+    C "Now, for the second part: {color=#EC15DA}Add about 5 mL of 1 M copper (II) sulfate (CuSO4) solution{/color} to a clean, dry test tube. {color=#EC15DA}Place a small amount of zinc metal in the solution{/color}. Observe the solution and the zinc before and after the reaction."
     
     C "Did you get all that?"
 
@@ -527,6 +602,7 @@ label scene_8:
     jump scene_9
     
 label scene_9:
+    hide screen Backbutton
     show chlory speaking
     C "Alright, to check your knowledge, it's time for a quiz!"
 
@@ -600,11 +676,18 @@ label scene_9:
     jump scene_10
     
 label scene_10:
-    $ first_try = True
-    show chlory idle
-    C "We're finally done!"
-    hide chlory idle
-    teacher "Great Job!"
+    show screen Backbutton
+    if variables.points >= 40:
+        show chlory idle
+        C "We're finally done!"
+        hide chlory idle
+        show Lead Moore happy at left
+        L "You cooked hard, You're getting passing grades for that!"
+        hide Lead Moore happy
+    else:
+        show Lead Moore cry at right
+        L "Im gonna obliterate you both unless you take this seriously bro, redo it now."
+        jump scene_8
 
     "You have [variables.points] points."
     "In total, you made [variables.mistakes] wrong choices so far."
@@ -612,12 +695,13 @@ label scene_10:
     jump scene_11
 
 label scene_11:
+    show screen Backbutton
 
     scene bg laboratory_table
     with fade
 
     show yuranno speaking
-    
+
     if not variables.wrong_answers:
         D "Good morning! Are you ready for our last experiment? This one is called metathesis! I'm excited to walk you through it, so pay close attention!"
     else:
@@ -626,9 +710,9 @@ label scene_11:
     hide yuranno speaking
     show yuranno default
     
-    D "First, we'll start by adding about 2 mL of 0.1 M Lead Nitrate Pb (NO3)2 to a clean, dry test tube."
+    D "First, we'll start by adding about {color=#EC15DA}2 mL of 0.1 M Lead Nitrate Pb (NO3)2{/color} to a clean, {color=#EC15DA}dry test tube.{/color}"
     
-    D "Next, we'll add 2 mL of 0.1 M Potassium Iodide (KI) to the test tube. Watch closely!"
+    D "Next, we'll add {color=#EC15DA}2 mL of 0.1 M Potassium Iodide (KI){/color} to the test tube. Watch closely!"
     
     D "Look at that! Observe the reaction and note any changes in the mixture."
     
@@ -642,11 +726,14 @@ label scene_11:
     
     D "Now comes the fun part! We'll fill each beaker with the ammonium hydroxide solution to produce red, white, and blue solutions."
     
-    D "Make sure to observe the colors that develop!"
+    D "Make sure to {color=#EC15DA}observe the colors that develop!{/color}"
+
+    D "Look! It's {color=#DCC43D}{b}Yellow!{/color}"
     
     jump scene_12
 
 label scene_12:
+    hide screen Backbutton
 
     D "Did you follow all of that? Let's do a quick quiz to check your understanding!"
     
@@ -699,26 +786,24 @@ label scene_12:
     jump scene_13
 
 label scene_13:
+    show screen Backbutton
     $ first_try = True
     D "We did it! Great job!"
     hide yuranno speaking
-
+    
     "You have [variables.points] points."
     "In total, you made [variables.mistakes] wrong choices so far."
     
     jump scene_14
 
 label scene_14:
+    show screen Backbutton
 
     scene bg classroom
     with fade
 
     show irene speaking at left
-    if not variables.wrong_answers:
-        A "Good morning, everyone! We are here today to present our findings on four interesting chemistry experiments: Synthesis, Analysis, Substitution, and Metathesis."
-    else:
-        A "Something wasn't quite right. Let's go over the experiments again."
-        A "We are here today to present our findings on four interesting chemistry experiments: Synthesis, Analysis, Substitution, and Metathesis."
+    A "Good morning, everyone! We are here today to present our findings on four interesting chemistry experiments: Synthesis, Analysis, Substitution, and Metathesis."
     hide irene speaking
 
     show titania speaking at right
@@ -726,19 +811,19 @@ label scene_14:
     hide titania speaking
 
     show irene speaking at left
-    A "We noted the appearance of the wire before heating and then heated it in the hottest part of the flame for 1-2 minutes. The key thing was to observe the changes."
+    A "We noted the {color=#EC15DA}appearance of the wire {/color} before heating and then heated it in the hottest part of the flame for 1-2 minutes. The key thing was to observe the changes."
     hide irene speaking
 
     show chlory speaking
-    C "Next, the Analysis experiment. We heated copper(II) carbonate and observed its color change and the emission of carbon dioxide."
+    C "Next, the Analysis experiment. We heated copper(II) carbonate and observed its color change and the {color=#EC15DA}emission of carbon dioxide.{/color}"
     hide chlory speaking
 
     show yuranno speaking at left
-    D "The Substitution experiment involved the reaction of zinc with hydrochloric acid and copper(II) sulfate. Safety precautions were very important, as we worked with acids."
+    D "The Substitution experiment involved the reaction of zinc with hydrochloric acid and copper(II) sulfate. {color=#EC15DA}Safety precautions were very important{/color}, as we worked with acids."
     hide yuranno speaking
 
     show irene speaking at right
-    A "Finally, the Metathesis experiment. We mixed lead nitrate with potassium iodide and observed the precipitate formation."
+    A "Finally, the Metathesis experiment. We mixed {color=#EC15DA}lead nitrate with potassium iodide and observed the precipitate formation.{/color}"
     hide irene speaking
 
     show titania speaking at left
@@ -748,6 +833,7 @@ label scene_14:
     jump quiz
 
 label quiz:
+    hide screen Backbutton
     
     if "q1" in variables.wrong_answers or first_try:
         show titania speaking at left
@@ -862,13 +948,15 @@ label quiz:
         jump scene_11
 
     python:
-        player_name = renpy.input("Enter your name for the leaderboard:")
-        variables.leaderboard.update({player_name: variables.points})
-        variables.save_leaderboard()
+        if variables.is_online():
+            player_name = renpy.input("Enter your name for the leaderboard:")
+            variables.leaderboard.update({player_name: variables.points})
+            variables.save_leaderboard()
 
     jump results
 
 label results:
+    show screen Backbutton
     if variables.points >= 40:
         "You have [variables.points] points."
         "In total, you made [variables.mistakes] wrong choices."
@@ -880,18 +968,20 @@ label results:
         D "Reloading the slideshow for review."
         jump quiz
 
-    B "We hope you learned something new about these experiments. Thanks for trying it out!"
-        
-    call screen Leaderboard(variables)
+    B "We hope you learned something new about these experiments. Thanks for trying it out!"    
 
-    menu leaderboard_menu:
-        "Retry from the beginning":
-            hide screen Leaderboard
-            jump start
-        "Exit":
-            return
-    
-    hide screen ScoreOverlay
+    if variables.is_online():
+        call screen Leaderboard(variables)
+
+        menu leaderboard_menu:
+            "Retry from the beginning":
+                hide screen Leaderboard
+                jump start
+            "Exit":
+                return
+        
+        hide screen ScoreOverlay
+    return
 
 label rightchoice:
     e "This is the right choice"
