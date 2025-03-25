@@ -224,7 +224,7 @@ label scene_2:
     A "We must hold the {color=#EC15DA}wire{/color} in the hottest part of a {color=#EC15DA}burner flame for 1 to 2 minutes.{/color}"
     A "But first, to do that, we need to fix the {color=#EC15DA}Bunsen burner{/color}. Put the end of the tube into the yellow faucet, and the other end to the {color=#EC15DA}Bunsen burner.{/color}"
     A "Then, we place the {color=#EC15DA}evaporating dish{/color} near the base of the burner."
-    A "After that, we get a piece of {color=#EC15DA}magnesium{/color} from the laboratory coordinator. Using {color=#EC15DA}crucible tongs{/color}, hold the sample in the burner flame until the{color=#EC15DA} magnesium {/color}starts to burn. REMEMBER,{color=#ff0000} DO NOT LOOK DIRECTLY AT THE FLAME.{/color}"
+    A "After that, we F a piece of {color=#EC15DA}magnesium{/color} from the laboratory coordinator. Using {color=#EC15DA}crucible tongs{/color}, hold the sample in the burner flame until the{color=#EC15DA} magnesium {/color}starts to burn. REMEMBER,{color=#ff0000} DO NOT LOOK DIRECTLY AT THE FLAME.{/color}"
     A "When the ribbon stops burning, put the remains in the evaporating dish. Then we examine all that!"
     A "Did you get all that?"
     hide irene speaking
@@ -343,21 +343,13 @@ label scene_5:
     else:
         B "Let's see what went wrong. Here's what the book says-"
     
-    B "Place 2 heaping micro spatulas of copper (II) carbonate (CuCO3) in a clean, dry test tube. Note the appearance of the sample."
-    
-    B "Watch the appearance closely—it's a light green powder."
-    
-    B "Next, we'll heat it for about 3 minutes. Use the test tube holder like this. Make sure you hold it at the top, and don't touch the bottom."
-    
-    B "After heating, we insert a burning wood splint into the test tube. If carbon dioxide (CO2) is present, it will extinguish the flame. Make sure you observe any changes in the residue inside the test tube."
-
-    B "Oh! Great, you've finished the first experiment. Let's move on to mine next. It says here in the book that-"
-    
     B "{color=#EC15DA}Place 2 heaping micro spatulas of copper (II) carbonate (CuCO3) {/color} in a clean, dry test tube. {color=#EC15DA}Note the appearance of the sample.{/color}"
     
     B "Watch the appearance closely—it's a light green powder."
     
     B "Next, we'll heat it for about {color=#EC15DA}3 minutes.{/color} Use the test tube holder like this.{color=#EC15DA} Make sure you hold it at the top, and don't touch the bottom.{/color}"
+    
+    B "After heating, we insert a burning wood splint into the test tube. If carbon dioxide (CO2) is present, it will extinguish the flame. Make sure you observe any changes in the residue inside the test tube."
     
     B "After heating, {color=#EC15DA}we insert a burning wood splint into the test tube. If carbon dioxide (CO2) is present, it will extinguish the flame.{/color} {color=#D17D61}Make sure you observe any changes in the residue inside the test tube.{/color}"
     
@@ -468,14 +460,14 @@ label scene_6:
         hide titania speaking
         menu:
             "3 minutes"(is_correct=True):
-                $ variables.correct_answer("q4")
-                show titania speaking at left
-                B "Wow, you have good memory!"
-                hide titania speaking
-            "2 minutes":
                 $ variables.wrong_answer("q4")
                 show titania speaking at left
                 B "Oh you got it wrong. Here look at the textbook again."
+                hide titania speaking  
+            "2 minutes":
+                $ variables.correct_answer("q4")
+                show titania speaking at left
+                B "Wow, you have good memory!"
                 hide titania speaking
             "20 seconds":
                 $ variables.wrong_answer("q4")
@@ -589,7 +581,7 @@ label scene_8:
     
     C "Take note of the appearance of the substance in the reaction test tube."
     
-    C "Now, for the second part: {color=#EC15DA}Add about 5 mL of 1 M copper (II) sulfate (CuSO4) solution{/color} to a clean, dry test tube. {color=#EC15DA}Place a small amount of zinc metal in the solution{/color}. Observe the solution and the zinc before and after the reaction."
+    C "Now, for the second part: {color=#EC15DA}Add about 5 mL of 1 M copper (II) sulfate (CuSO4) solution{/color} to a clean, dry test tube. Then, {color=#EC15DA}Place a small amount of zinc metal in the solution{/color}.Lastly, observe the solution and the zinc before and after the reaction."
     
     C "Did you get all that?"
 
@@ -854,7 +846,7 @@ label quiz:
             "C. The appearance of the wire"(is_correct=True):
                 $ variables.correct_answer("q1")
                 show titania speaking at left
-                B "That's right! Observing the wire before heating is crucial. You get 1 point!"
+                B "That's right! Observing the wire before heating is crucial."
                 hide titania speaking
             "D. The temperature of the burner":
                 $ variables.wrong_answer("q1")
@@ -918,7 +910,7 @@ label quiz:
 
     if "q4" in variables.wrong_answers or first_try:
         show irene speaking at left
-        A "Question 4: What was the noticeable observation when lead nitrate reacted with potassium iodide in a Metathesis reaction?"
+        A "Question 4: What was the noticeable change when lead nitrate reacted with potassium iodide in a Metathesis reaction?"
         hide irene speaking
 
         menu:
@@ -960,8 +952,8 @@ label results:
     if variables.points >= 40:
         "You have [variables.points] points."
         "In total, you made [variables.mistakes] wrong choices."
-        B "Well done! You certainly listened well. As a reward—an extra credit point!"
-        D "Congratulations! Here's a chemistry-themed sticker!"
+        B "Well done! You certainly listened well."
+        D "Congratulations!"
     else:
         A "Looks like you're a bit of practice away. Don't worry!"
         C "You need to retake the quiz to improve your score. Let's go over the main observations again."
