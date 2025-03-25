@@ -112,8 +112,8 @@ screen say(who, what):
 
     ## If there's a side image, display it above the text. Do not display on the
     ## phone variant - there's no room.
-    if not renpy.variant("small"):
-        add SideImage() xalign 0.0 yalign 1.0
+    #if not renpy.variant("small"):
+        #add SideImage() xalign 0.0 yalign 1.5
 
 
 ## Make the namebox available for styling through the Character object.
@@ -135,31 +135,29 @@ style window:
     yalign gui.textbox_yalign
     ysize gui.textbox_height
 
-    background Solid( "#000000", xalign=0.5, yalign=0.5 )
+    background Image("gui/textbox.png", xalign=0.5, yalign=1.0)
 
 style namebox:
-    xpos gui.name_xpos
-    xanchor gui.name_xalign
-    xsize gui.namebox_width
-    ypos gui.name_ypos
-    ysize gui.namebox_height
+    xpos 300
+    xanchor 100
+    xsize 350
+    ypos -200
+    ysize 199
 
     background Frame("gui/namebox.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
     padding gui.namebox_borders.padding
 
 style say_label:
     properties gui.text_properties("name", accent=True)
-    xalign gui.name_xalign
+    xalign 0.25
     yalign 0.5
-    outlines [ (1, "#91dfd25b", 0, 0) ]
 
 style say_dialogue:
     properties gui.text_properties("dialogue")
 
-    xpos gui.dialogue_xpos
-    xsize gui.dialogue_width
-    ypos gui.dialogue_ypos
-    outlines [ (1, "#99bbb3", 0, 0) ]
+    xpos 450
+    xsize 1080
+    ypos 30
 
     adjust_spacing False
 
@@ -208,19 +206,10 @@ style input:
 
 screen choice(items):
     style_prefix "choice"
+
     vbox:
         for i in items:
-            python:
-                caption = i.caption
-                if persistent.admin:
-                    color = (
-                        "#009900"
-                        if i.kwargs.get("is_correct", False) else
-                        "#990000"
-                    )
-                    caption = "{color=%s}%s{/color}" % (color, caption)
-            textbutton caption:
-                action i.action
+            textbutton i.caption action i.action
 
 
 style choice_vbox is vbox
@@ -258,15 +247,16 @@ screen quick_menu():
 
             xalign 0.5
             yalign 1.0
+            yoffset -50
 
-            textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Q.Save") action QuickSave()
-            textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Prefs") action ShowMenu('preferences')
+            #textbutton _("Back") action Rollback()
+            #textbutton _("History") action ShowMenu('history')
+            #textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+            #textbutton _("Auto") action Preference("auto-forward", "toggle")
+            #textbutton _("Save") action ShowMenu('save')
+            #textbutton _("Q.Save") action QuickSave()
+            #textbutton _("Q.Load") action QuickLoad()
+            #textbutton _("Prefs") action ShowMenu('preferences')
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -296,7 +286,6 @@ style quick_button_text:
 ## to other menus, and to start the game.
 
 screen navigation():
-
     if main_menu:
         button:
             if persistent.admin:
@@ -315,6 +304,8 @@ screen navigation():
                 true_value=True,
                 false_value=False
             )
+
+
     vbox:
         style_prefix "navigation"
 
@@ -329,34 +320,34 @@ screen navigation():
 
         else:
 
-            textbutton _("History") action ShowMenu("history")
+            #textbutton _("History") action ShowMenu("history")
 
-            textbutton _("Save") action ShowMenu("save")
+            #textbutton _("Save") action ShowMenu("save")
 
-        textbutton _("Load") action ShowMenu("load")
+        #textbutton _("Load") action ShowMenu("load")
 
-        textbutton _("Preferences") action ShowMenu("preferences")
+            textbutton _("Preferences") action ShowMenu("preferences")
 
-        if _in_replay:
+        #if _in_replay:
 
-            textbutton _("End Replay") action EndReplay(confirm=True)
+        #    textbutton _("End Replay") action EndReplay(confirm=True)
 
-        elif not main_menu:
+        #elif not main_menu:
 
             textbutton _("Main Menu") action MainMenu()
 
-        textbutton _("About") action ShowMenu("about")
+        #textbutton _("About") action ShowMenu("about")
 
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+        #if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
 
             ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action ShowMenu("help")
+            #textbutton _("Help") action ShowMenu("help")
 
-        if renpy.variant("pc"):
+        #if renpy.variant("pc"):
 
             ## The quit button is banned on iOS and unnecessary on Android and
             ## Web.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            #textbutton _("Quit") action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button
@@ -450,9 +441,9 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 #PARALLAX LAYER IMAGES HERE VVVV
-    add TrackCursor("gui/main_menu.png", 25) xpos 4 ypos 2 xzoom 1.1 yzoom 1.1
-    add TrackCursor("images/Chlory_Confused.png", 16)xpos 700 ypos 200 xzoom 0.5 yzoom 0.5
-    add TrackCursor("images/Titania_Idle.png", 14)xpos 1100 ypos 200 xzoom 0.5 yzoom 0.5
+    add TrackCursor("gui/main_menu.png", 25) xpos 4 ypos 2 xzoom 0.555 yzoom 0.555
+    add TrackCursor("images/FOREBGBUBBLES.png", 21) xpos 4 ypos 2 xzoom 0.555 yzoom 0.555
+    add TrackCursor("images/ChloryBG.png", 16)xpos -90 ypos -90 xzoom 0.6 yzoom 0.6
     #add "gui/Menu_layer.png" xpos 100 ypos -10 xzoom 1.0 yzoom 1.0
     
     ## This empty frame darkens the main menu.
@@ -578,10 +569,10 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
         action Return()
 
-    label title
+#    label title
 
-    if main_menu:
-        key "game_menu" action ShowMenu("main_menu")
+#    if main_menu:
+#        key "game_menu" action ShowMenu("main_menu")
 
 
 style game_menu_outer_frame is empty
@@ -739,7 +730,7 @@ screen file_slots(title):
 
                         has vbox
 
-                        add FileScreenshot(slot) xalign 0.5
+                        #add FileScreenshot(slot) xalign 0.5
 
                         text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
                             style "slot_time_text"
@@ -1561,7 +1552,7 @@ style bubble_what:
     align (0.5, 0.5)
     text_align 0.5
     layout "subtitle"
-    color "#000"
+    color "#000000"
 
 define bubble.frame = Frame("gui/bubble.png", 55, 55, 55, 95)
 define bubble.thoughtframe = Frame("gui/thoughtbubble.png", 55, 55, 55, 55)
@@ -1625,15 +1616,16 @@ screen quick_menu():
             xalign 0.5
             yalign 1.0
 
-            textbutton _("Back") action Rollback()
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
+            #textbutton _("Back") action Rollback()
+            #textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+            #textbutton _("Auto") action Preference("auto-forward", "toggle")
             textbutton _("Menu") action ShowMenu()
 
 
-style window:
-    variant "small"
-    background "gui/phone/textbox.png"
+#style window:
+    #variant "small"
+    #background "gui/phone/textbox.png"
+    #xpos 1000
 
 style radio_button:
     variant "small"

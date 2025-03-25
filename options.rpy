@@ -13,6 +13,7 @@
 ## The _() surrounding the string marks it as eligible for translation.
 
 define config.name = _("Alchemi")
+default persistent.admin = False
 
 init python:
     config.mouse = { "default": [("gui/cursor/cursor_pen.png", 64, 64 ) ] }
@@ -122,7 +123,7 @@ define config.window_hide_transition = Dissolve(.2)
 ## Controls the default text speed. The default, 0, is infinite, while any other
 ## number is the number of characters per second to type out.
 
-default preferences.text_cps = 0
+default preferences.text_cps = 35
 
 
 ## The default auto-forward delay. Larger numbers lead to longer waits, with 0
@@ -188,15 +189,20 @@ init python:
 
     ## To archive files, classify them as 'archive'.
 
-    # build.classify('game/**.png', 'archive')
-    # build.classify('game/**.jpg', 'archive')
+    build.classify('game/audio/classroom.ogg', 'archive')
+    build.classify('game/audio/Music/**', 'archive')
+    build.classify('game/fonts/**', 'archive')
+    build.classify('game/gui/**', 'archive')
+    build.classify('game/images/**', 'archive')
+    build.classify('game/python-packages/**', 'archive')
+    build.classify('game/tl/**', 'archive')
+    build.classify('game/*', 'archive')
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
 
     build.documentation('*.html')
     build.documentation('*.txt')
-
 
 ## A Google Play license key is required to perform in-app purchases. It can be
 ## found in the Google Play developer console, under "Monetize" > "Monetization
